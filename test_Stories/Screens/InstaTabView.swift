@@ -10,7 +10,12 @@ import SwiftUI
 struct InstaTabView: View {
     var body: some View {
         TabView {
-            HomeView(viewModel: .init(storiesRepository: StoriesRepository()))
+            HomeView(
+                viewModel: .init(
+                    storiesRepository: StoriesRepository(),
+                    seenStoriesService: SeenStoriesService()
+                )
+            )
                 .tabItem {
                     Image(systemName: "house")
                 }

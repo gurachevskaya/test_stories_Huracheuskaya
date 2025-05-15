@@ -12,7 +12,7 @@ struct HomeView: View {
     
     var body: some View {
         VStack {
-            StoryCircleView(viewModel: viewModel)
+            TopStoriesView(viewModel: viewModel)
             Spacer()
         }
         .task {
@@ -26,5 +26,10 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(viewModel: HomeViewModel(storiesRepository: StoriesRepository()))
+    HomeView(
+        viewModel: HomeViewModel(
+            storiesRepository: StoriesRepository(),
+            seenStoriesService: SeenStoriesService()
+        )
+    )
 }

@@ -19,9 +19,14 @@ final class HomeViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     
     private let storiesRepository: StoriesRepositoryProtocol
+    private let seenStoriesService: SeenStoriesServiceProtocol
     
-    init(storiesRepository: StoriesRepositoryProtocol) {
+    init(
+        storiesRepository: StoriesRepositoryProtocol,
+        seenStoriesService: SeenStoriesServiceProtocol
+    ) {
         self.storiesRepository = storiesRepository
+        self.seenStoriesService = seenStoriesService
     }
     
     @MainActor
@@ -32,6 +37,7 @@ final class HomeViewModel: ObservableObject {
         do {
             let usersResponse = try await storiesRepository.getStories()
             allUsers = usersResponse.pages[page].users
+            seenUserIDs = seenStoriesService.loadSeenUserIDs()
             print(allUsers)
         } catch {
             handleError(error: error as? AppError ?? .unableToComplete)
@@ -39,11 +45,12 @@ final class HomeViewModel: ObservableObject {
     }
     
     func markSeen(_ user: User) {
-        seenUserIDs.insert(user.id)
+        seenStoriesService.markAsSeen(userID: user.id)
+        seenUserIDs = seenStoriesService.loadSeenUserIDs()
     }
     
     func isSeen(_ user: User) -> Bool {
-        seenUserIDs.contains(user.id)
+        seenStoriesService.isSeen(userID: user.id)
     }
     
     private func handleError(error: AppError) {
