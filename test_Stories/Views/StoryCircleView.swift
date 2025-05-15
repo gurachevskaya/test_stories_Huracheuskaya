@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct StoryCircleView: View {
     private enum Constants {
@@ -24,11 +25,7 @@ struct StoryCircleView: View {
                     lineWidth: 3
                 )
                 .background(
-                    AsyncImage(url: user.profilePictureURL) { image in
-                        image.resizable().scaledToFill()
-                    } placeholder: {
-                        Color.gray
-                    }
+                    KFImage(user.profilePictureURL)
                 )
                 .clipShape(Circle())
                 .frame(width: Constants.circleSize, height: Constants.circleSize)

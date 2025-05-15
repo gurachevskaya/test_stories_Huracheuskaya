@@ -11,16 +11,18 @@ struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
     
     var body: some View {
-        VStack {
-            TopStoriesView(viewModel: viewModel)
-            Spacer()
-        }
-        .task {
-            await viewModel.getStories(page: 0)
-        }
-        
-        if viewModel.isLoading {
-            ProgressView("Loading..")
+        ZStack {
+            VStack {
+                TopStoriesView(viewModel: viewModel)
+                Spacer()
+            }
+            .task {
+                await viewModel.getStories(page: 0)
+            }
+            
+            if viewModel.isLoading {
+                ProgressView("Loading..")
+            }
         }
     }
 }

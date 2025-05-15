@@ -23,6 +23,7 @@ struct TopStoriesView: View {
             }
             .padding(.horizontal)
         }
+        .frame(height: 120)
     }
 }
 

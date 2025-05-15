@@ -13,7 +13,6 @@ protocol StoriesRepositoryProtocol {
 
 final class StoriesRepository: StoriesRepositoryProtocol {
     func getStories() async throws -> UsersResponse {
-        
         guard let url = Bundle.main.url(forResource: "UsersResponse", withExtension: "json") else {
             throw AppError.unableToComplete
         }
