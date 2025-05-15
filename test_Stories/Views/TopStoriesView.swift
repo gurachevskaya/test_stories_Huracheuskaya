@@ -19,6 +19,13 @@ struct TopStoriesView: View {
                         isSeen: viewModel.isSeen(user),
                         onTap: { viewModel.markSeen(user)}
                     )
+                    .onAppear {
+                        if user.id == viewModel.allUsers.last?.id {
+                            Task {
+                                await viewModel.getStories()
+                            }
+                        }
+                    }
                 }
             }
             .padding(.horizontal)

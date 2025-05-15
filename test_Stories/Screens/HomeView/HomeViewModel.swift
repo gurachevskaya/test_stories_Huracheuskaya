@@ -12,8 +12,8 @@ final class HomeViewModel: ObservableObject {
     @Published var allUsers: [User] = []
     @Published var seenUserIDs: Set<Int> = []
 
-    private var pages: [UserPage] = []
     private var currentPage = 0
+    private var canLoadMorePages = true
     
     @Published var alertItem: AlertItem?
     @Published var isLoading: Bool = false
@@ -27,23 +27,31 @@ final class HomeViewModel: ObservableObject {
     ) {
         self.storiesRepository = storiesRepository
         self.seenStoriesService = seenStoriesService
+        
+        Task{
+            await getStories()
+        }
     }
     
     @MainActor
-    func getStories(page: Int) async {
+    func getStories() async {
+        guard !isLoading && canLoadMorePages else { return }
+        
         isLoading = true
         defer { isLoading = false }
         
         do {
-            let usersResponse = try await storiesRepository.getStories()
-            allUsers = usersResponse.pages[page].users
+            let usersPage = try await storiesRepository.getStories(page: currentPage)
+            allUsers.append(contentsOf:  usersPage.users)
+
+            currentPage += 1
+            canLoadMorePages = usersPage.users.count > 0
             seenUserIDs = seenStoriesService.loadSeenUserIDs()
-            print(allUsers)
         } catch {
             handleError(error: error as? AppError ?? .unableToComplete)
         }
     }
-    
+
     func markSeen(_ user: User) {
         seenStoriesService.markAsSeen(userID: user.id)
         seenUserIDs = seenStoriesService.loadSeenUserIDs()

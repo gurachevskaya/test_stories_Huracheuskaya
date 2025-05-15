@@ -16,10 +16,13 @@ struct HomeView: View {
                 TopStoriesView(viewModel: viewModel)
                 Spacer()
             }
-            .task {
-                await viewModel.getStories(page: 0)
+            .alert(item: $viewModel.alertItem) { alertItem in
+                Alert(
+                    title: alertItem.title,
+                    message: alertItem.message,
+                    dismissButton: alertItem.dismissButton
+                )
             }
-            
             if viewModel.isLoading {
                 ProgressView("Loading..")
             }
