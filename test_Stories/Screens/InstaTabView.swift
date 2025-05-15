@@ -16,9 +16,9 @@ struct InstaTabView: View {
                     seenStoriesService: SeenStoriesService()
                 )
             )
-                .tabItem {
-                    Image(systemName: "house")
-                }
+            .tabItem {
+                Image(systemName: "house")
+            }
             
             PlaceholderScreenView()
                 .tabItem {

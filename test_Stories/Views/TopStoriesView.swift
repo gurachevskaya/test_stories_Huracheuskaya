@@ -12,37 +12,19 @@ struct TopStoriesView: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 16) {
+            LazyHStack(spacing: 16) {
                 ForEach(viewModel.allUsers) { user in
-                    VStack {
-                        Circle()
-                            .strokeBorder(
-                                viewModel.isSeen(user) ? Color.gray : Color.blue,
-                                lineWidth: 3
-                            )
-                            .background(
-                                AsyncImage(url: user.profilePictureURL) { image in
-                                    image.resizable().scaledToFill()
-                                } placeholder: {
-                                    Color.gray
-                                }
-                            )
-                            .clipShape(Circle())
-                            .frame(width: 60, height: 60)
-                        
-                        Text(user.name)
-                            .font(.caption)
-                    }
-                    .onTapGesture {
-                        viewModel.markSeen(user)
-                    }
+                    StoryCircleView(
+                        user: user,
+                        isSeen: viewModel.isSeen(user),
+                        onTap: { viewModel.markSeen(user)}
+                    )
                 }
             }
             .padding(.horizontal)
         }
     }
 }
-
 
 #Preview {
     TopStoriesView(
