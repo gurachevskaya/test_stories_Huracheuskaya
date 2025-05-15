@@ -19,9 +19,9 @@ struct StoryCircleView: View {
     
     var body: some View {
         VStack {
-            Button(action: {
+            Button {
                 onTap()
-            }) {
+            } label: {
                 storyImageCircle
             }
             .buttonStyle(PlainButtonStyle())
