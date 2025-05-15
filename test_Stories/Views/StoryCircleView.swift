@@ -16,28 +16,36 @@ struct StoryCircleView: View {
     let user: User
     let isSeen: Bool
     let onTap: () -> Void
-
+    
     var body: some View {
         VStack {
-            Circle()
-                .strokeBorder(
-                    isSeen ? Color.gray : Color.blue,
-                    lineWidth: 3
-                )
-                .background(
-                    KFImage(user.profilePictureURL)
-                )
-                .clipShape(Circle())
-                .frame(width: Constants.circleSize, height: Constants.circleSize)
-
+            Button(action: {
+                onTap()
+            }) {
+                storyImageCircle
+            }
+            .buttonStyle(PlainButtonStyle())
+            
             Text(user.name)
                 .frame(maxWidth: Constants.circleSize)
                 .lineLimit(1)
                 .font(.caption)
         }
-        .onTapGesture {
-            onTap()
-        }
+    }
+    
+    private var storyImageCircle: some View {
+        Circle()
+            .strokeBorder(
+                isSeen ? Color.gray : Color.blue,
+                lineWidth: 3
+            )
+            .background(
+                KFImage(user.profilePictureURL)
+                    .resizable()
+                    .scaledToFill()
+            )
+            .clipShape(Circle())
+            .frame(width: Constants.circleSize, height: Constants.circleSize)
     }
 }
 
@@ -46,7 +54,7 @@ struct StoryCircleView: View {
         user: .init(
             id: 1,
             name: "name",
-            profilePictureURL: URL(string: "")!
+            profilePictureURL: URL(string: "https://picsum.photos/id/237/200/300")!
         ),
         isSeen: false,
         onTap: {}
