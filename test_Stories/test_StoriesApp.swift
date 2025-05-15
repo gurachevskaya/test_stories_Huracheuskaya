@@ -11,7 +11,7 @@ import SwiftUI
 struct test_StoriesApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            InstaTabView()
         }
     }
 }
