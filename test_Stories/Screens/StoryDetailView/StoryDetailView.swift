@@ -8,11 +8,18 @@
 import SwiftUI
 
 struct StoryDetailView: View {
+    @Binding var selectedUser: User?
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Text("Story of a \(selectedUser?.name ?? "user")")
+            Button("Back") {
+                selectedUser = nil
+            }
+        }
     }
 }
 
 #Preview {
-    StoryDetailView()
+    StoryDetailView(selectedUser: .constant(nil))
 }

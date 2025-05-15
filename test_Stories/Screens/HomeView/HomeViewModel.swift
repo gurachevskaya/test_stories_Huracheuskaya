@@ -10,14 +10,14 @@ import SwiftUI
 
 final class HomeViewModel: ObservableObject {
     @Published var allUsers: [User] = []
+    @Published var selectedUser: User?
     @Published var seenUserIDs: Set<Int> = []
-
-    private var currentPage = 0
-    private var canLoadMorePages = true
-    
     @Published var alertItem: AlertItem?
     @Published var isLoading: Bool = false
     
+    private var currentPage = 0
+    private var canLoadMorePages = true
+   
     private let storiesRepository: StoriesRepositoryProtocol
     private let seenStoriesService: SeenStoriesServiceProtocol
     
@@ -51,8 +51,13 @@ final class HomeViewModel: ObservableObject {
             handleError(error: error as? AppError ?? .unableToComplete)
         }
     }
+    
+    func storyTapped(_ user: User) {
+        selectedUser = user
+        markSeen(user)
+    }
 
-    func markSeen(_ user: User) {
+    private func markSeen(_ user: User) {
         seenStoriesService.markAsSeen(userID: user.id)
         seenUserIDs = seenStoriesService.loadSeenUserIDs()
     }
@@ -67,5 +72,6 @@ final class HomeViewModel: ObservableObject {
             message: Text("Please try again later"),
             dismissButton: .default(Text("OK"))
         )
+        
     }
 }

@@ -15,7 +15,7 @@ struct UserPage: Decodable {
     let users: [User]
 }
 
-struct User: Codable, Identifiable {
+struct User: Codable, Identifiable, Hashable {
     let id: Int
     let name: String
     let profilePictureURL: URL

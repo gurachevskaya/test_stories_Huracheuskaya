@@ -17,7 +17,7 @@ struct TopStoriesView: View {
                     StoryCircleView(
                         user: user,
                         isSeen: viewModel.isSeen(user),
-                        onTap: { viewModel.markSeen(user)}
+                        onTap: { viewModel.storyTapped(user) }
                     )
                     .onAppear {
                         if user.id == viewModel.allUsers.last?.id {

@@ -27,6 +27,9 @@ struct HomeView: View {
                 ProgressView("Loading..")
             }
         }
+        .fullScreenCover(item: $viewModel.selectedUser) { user in
+            StoryDetailView(selectedUser: $viewModel.selectedUser)
+        }
     }
 }
 
