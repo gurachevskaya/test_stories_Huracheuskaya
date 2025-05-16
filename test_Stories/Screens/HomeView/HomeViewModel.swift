@@ -6,66 +6,22 @@
 //
 
 import SwiftUI
-
 final class HomeViewModel: ObservableObject {
-    @Published var allUsers: [User] = []
-    @Published var selectedUser: User?
-    @Published var seenUserIDs: Set<Int> = []
     @Published var alertItem: AlertItem?
     @Published var isLoading: Bool = false
+    @Published var selectedUser: User?
     
-    private var currentPage = 0
-    private var canLoadMorePages = true
-   
-    private let storiesRepository: StoriesRepositoryProtocol
-    
+    var topStoriesViewModel: TopStoriesViewModel
+  
     init(storiesRepository: StoriesRepositoryProtocol) {
-        self.storiesRepository = storiesRepository
-        
-        Task{
-            await getStories()
-        }
-    }
-    
-    @MainActor
-    func getStories() async {
-        guard !isLoading && canLoadMorePages else { return }
-        
-        isLoading = true
-        defer { isLoading = false }
-        
-        do {
-            let usersPage = try await storiesRepository.getStories(page: currentPage)
-            allUsers.append(contentsOf:  usersPage.users)
+        topStoriesViewModel = TopStoriesViewModel(storiesRepository: storiesRepository)
 
-            currentPage += 1
-            canLoadMorePages = usersPage.users.count > 0
-            seenUserIDs = storiesRepository.loadSeenUserIDs()
-        } catch {
-            handleError(error: error as? AppError ?? .unableToComplete)
-        }
+        setupBindings()
     }
     
-    func storyTapped(_ user: User) {
-        selectedUser = user
-        markSeen(user)
-    }
-
-    private func markSeen(_ user: User) {
-        storiesRepository.markAsSeen(userID: user.id)
-        seenUserIDs = storiesRepository.loadSeenUserIDs()
-    }
-    
-    func isSeen(_ user: User) -> Bool {
-        storiesRepository.isSeen(userID: user.id)
-    }
-    
-    private func handleError(error: AppError) {
-        alertItem = AlertItem(
-            title: Text("Something went wrong"),
-            message: Text("Please try again later"),
-            dismissButton: .default(Text("OK"))
-        )
-        
+    private func setupBindings() {
+        topStoriesViewModel.$selectedUser.assign(to: &$selectedUser)
+        topStoriesViewModel.$alertItem.assign(to: &$alertItem)
+        topStoriesViewModel.$isLoading.assign(to: &$isLoading)
     }
 }

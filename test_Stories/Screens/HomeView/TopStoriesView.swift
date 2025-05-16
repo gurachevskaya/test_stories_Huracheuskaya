@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TopStoriesView: View {
-    @ObservedObject var viewModel: HomeViewModel
+    @ObservedObject var viewModel: TopStoriesViewModel
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {

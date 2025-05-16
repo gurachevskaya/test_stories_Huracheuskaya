@@ -13,7 +13,7 @@ struct HomeView: View {
     var body: some View {
         ZStack {
             VStack {
-                TopStoriesView(viewModel: viewModel)
+                TopStoriesView(viewModel: viewModel.topStoriesViewModel)
                 Spacer()
             }
             .alert(item: $viewModel.alertItem) { alertItem in
