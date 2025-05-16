@@ -10,12 +10,7 @@ import SwiftUI
 struct InstaTabView: View {
     var body: some View {
         TabView {
-            HomeView(
-                viewModel: .init(
-                    storiesRepository: StoriesRepository(),
-                    seenStoriesService: SeenStoriesService()
-                )
-            )
+            HomeView(viewModel: .init(storiesRepository: StoriesRepository()))
             .tabItem {
                 Image(systemName: "house")
             }
@@ -30,7 +25,7 @@ struct InstaTabView: View {
                     Image(systemName: "person.crop.circle")
                 }
         }
-        .accentColor(Color.black)
+        .accentColor(Color.blue)
     }
 }
 

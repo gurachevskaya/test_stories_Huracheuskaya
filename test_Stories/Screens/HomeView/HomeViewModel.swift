@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 final class HomeViewModel: ObservableObject {
     @Published var allUsers: [User] = []
     @Published var selectedUser: User?
@@ -19,14 +18,9 @@ final class HomeViewModel: ObservableObject {
     private var canLoadMorePages = true
    
     private let storiesRepository: StoriesRepositoryProtocol
-    private let seenStoriesService: SeenStoriesServiceProtocol
     
-    init(
-        storiesRepository: StoriesRepositoryProtocol,
-        seenStoriesService: SeenStoriesServiceProtocol
-    ) {
+    init(storiesRepository: StoriesRepositoryProtocol) {
         self.storiesRepository = storiesRepository
-        self.seenStoriesService = seenStoriesService
         
         Task{
             await getStories()
@@ -46,7 +40,7 @@ final class HomeViewModel: ObservableObject {
 
             currentPage += 1
             canLoadMorePages = usersPage.users.count > 0
-            seenUserIDs = seenStoriesService.loadSeenUserIDs()
+            seenUserIDs = storiesRepository.loadSeenUserIDs()
         } catch {
             handleError(error: error as? AppError ?? .unableToComplete)
         }
@@ -58,12 +52,12 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func markSeen(_ user: User) {
-        seenStoriesService.markAsSeen(userID: user.id)
-        seenUserIDs = seenStoriesService.loadSeenUserIDs()
+        storiesRepository.markAsSeen(userID: user.id)
+        seenUserIDs = storiesRepository.loadSeenUserIDs()
     }
     
     func isSeen(_ user: User) -> Bool {
-        seenStoriesService.isSeen(userID: user.id)
+        storiesRepository.isSeen(userID: user.id)
     }
     
     private func handleError(error: AppError) {

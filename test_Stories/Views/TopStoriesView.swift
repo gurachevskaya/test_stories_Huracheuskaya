@@ -36,9 +36,6 @@ struct TopStoriesView: View {
 
 #Preview {
     TopStoriesView(
-        viewModel: .init(
-            storiesRepository: StoriesRepository(),
-            seenStoriesService: SeenStoriesService()
-        )
+        viewModel: .init(storiesRepository: StoriesRepository())
     )
 }

@@ -8,18 +8,18 @@
 import SwiftUI
 
 struct StoryDetailView: View {
-    @Binding var selectedUser: User?
+    @ObservedObject var viewModel: StoryDetailsViewModel
     
     var body: some View {
         VStack {
-            Text("Story of a \(selectedUser?.name ?? "user")")
+            Text("Story of a \(viewModel.selectedUser.wrappedValue?.name ?? "")")
             Button("Back") {
-                selectedUser = nil
+                viewModel.goBack()
             }
         }
     }
 }
 
 #Preview {
-    StoryDetailView(selectedUser: .constant(nil))
+    StoryDetailView(viewModel: .init(user: .constant(nil)))
 }

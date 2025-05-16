@@ -28,16 +28,13 @@ struct HomeView: View {
             }
         }
         .fullScreenCover(item: $viewModel.selectedUser) { user in
-            StoryDetailView(selectedUser: $viewModel.selectedUser)
+            StoryDetailView(viewModel: .init(user: $viewModel.selectedUser))
         }
     }
 }
 
 #Preview {
     HomeView(
-        viewModel: HomeViewModel(
-            storiesRepository: StoriesRepository(),
-            seenStoriesService: SeenStoriesService()
-        )
+        viewModel: HomeViewModel(storiesRepository: StoriesRepository())
     )
 }

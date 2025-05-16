@@ -9,31 +9,29 @@ import Foundation
 
 protocol StoriesRepositoryProtocol {
     func getStories(page: Int) async throws -> UserPage
+    func markAsSeen(userID: Int)
+    func isSeen(userID: Int) -> Bool
+    func loadSeenUserIDs() -> Set<Int>
 }
 
 final class StoriesRepository: StoriesRepositoryProtocol {
-    private var allPages: [UserPage] = []
+    private let seenStoriesService: SeenStoriesServiceProtocol
+    private let storiesNetworkService: StoriesNetworkServiceProtocol
     
-    private func loadAllUsersIfNeeded() {
-        guard allPages.isEmpty,
-              let url = Bundle.main.url(forResource: "UsersResponse", withExtension: "json") else {
-            return
-        }
-        
-        do {
-            let data = try Data(contentsOf: url)
-            let decoder = JSONDecoder()
-            let response = try decoder.decode(UsersResponse.self, from: data)
-            allPages = response.pages
-        } catch {
-            print("Error loading JSON: \(error)")
-        }
+    init(
+        seenStoriesService: SeenStoriesServiceProtocol = SeenStoriesService(),
+        storiesNetworkService: StoriesNetworkServiceProtocol = StoriesNetworkServiceMock()
+    ) {
+        self.seenStoriesService = seenStoriesService
+        self.storiesNetworkService = storiesNetworkService
     }
+    
+    private var allPages: [UserPage] = []
     
     func getStories(page: Int) async throws -> UserPage {
         try await Task.sleep(nanoseconds: 1_000_000_000) // simulate network delay
 
-        loadAllUsersIfNeeded()
+        try await loadAllUsersIfNeeded()
 
         guard page < allPages.count else {
             return UserPage(users: [])
@@ -44,4 +42,22 @@ final class StoriesRepository: StoriesRepositoryProtocol {
         
         return allPages[page]
     }
+    
+    func markAsSeen(userID: Int) {
+        seenStoriesService.markAsSeen(userID: userID)
+    }
+    
+    func isSeen(userID: Int) -> Bool {
+        seenStoriesService.isSeen(userID: userID)
+    }
+    
+    func loadSeenUserIDs() -> Set<Int> {
+        seenStoriesService.loadSeenUserIDs()
+    }
+    
+    private func loadAllUsersIfNeeded() async throws {
+        guard allPages.isEmpty else { return }
+        allPages = try await storiesNetworkService.getStories()
+    }
+    
 }
